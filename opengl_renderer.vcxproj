@@ -137,11 +137,15 @@
     <ClInclude Include="include\cylinder.hpp" />
     <ClInclude Include="include\filesystem.hpp" />
     <ClInclude Include="include\icosahedron.hpp" />
+    <ClInclude Include="include\light.hpp" />
     <ClInclude Include="include\material.hpp" />
+    <ClInclude Include="include\mesh.hpp" />
+    <ClInclude Include="include\octahedron.hpp" />
     <ClInclude Include="include\rectangle.hpp" />
     <ClInclude Include="include\renderer.hpp" />
     <ClInclude Include="include\shader.hpp" />
     <ClInclude Include="include\sphere.hpp" />
+    <ClInclude Include="include\tetrahedron.hpp" />
     <ClInclude Include="include\transform.hpp" />
     <ClInclude Include="include\triangle.hpp" />
   </ItemGroup>
@@ -149,12 +153,15 @@
     <ClCompile Include="..\..\..\..\..\lib\glad\src\glad.c" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\mesh.cpp" />
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\shader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaders\default.frag" />
-    <None Include="src\shaders\default.vert" />
+    <None Include="src\shaders\phong.frag" />
+    <None Include="src\shaders\phong.vert" />
+    <None Include="src\shaders\light.frag" />
+    <None Include="src\shaders\light.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -5,10 +5,13 @@
 #include "cylinder.hpp"
 #include "filesystem.hpp"
 #include "icosahedron.hpp"
+#include "light.hpp"
+#include "octahedron.hpp"
 #include "rectangle.hpp"
 #include "renderer.hpp"
 #include "shader.hpp"
 #include "sphere.hpp"
+#include "tetrahedron.hpp"
 
 #include <iostream>
 
@@ -20,8 +23,8 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 void move_camera();
 void process_input(GLFWwindow* window);
 
-constexpr int SCREEN_WIDTH = 1280;
-constexpr int SCREEN_HEIGHT = 720;
+constexpr int SCREEN_WIDTH = 1920;
+constexpr int SCREEN_HEIGHT = 1080;
 constexpr double ASPECT_RATIO = SCREEN_WIDTH / static_cast<float>(SCREEN_HEIGHT);
 
 bool mouse_button_pressed = false;
@@ -37,8 +40,8 @@ Camera camera(
     glm::radians(90.0f),
     Transform(glm::vec3(0.0f, 0.0f, 3.0f))
 );
-constexpr float CAMERA_MOVEMENT_VELOCITY = 3.0f;
-constexpr float CAMERA_ROTATION_VELOCITY = 100.0f;
+constexpr float CAMERA_MOVEMENT_VELOCITY = 6.0f;
+constexpr float CAMERA_ROTATION_VELOCITY = 200.0f;
 
 bool wireframe = false;
 bool move_forward = false;
@@ -56,20 +59,32 @@ int main() {
     GLFWwindow* window = initialize_window();
     Renderer::initialize();
 
-    Shader default_shader(
-        FileSystem::get_path("/src/shaders/default.vert"),
-        FileSystem::get_path("/src/shaders/default.frag"));
+    Shader phong_shader(
+        FileSystem::get_path("/src/shaders/phong.vert"),
+        FileSystem::get_path("/src/shaders/phong.frag"));
+    Shader light_shader(
+        FileSystem::get_path("/src/shaders/light.vert"),
+        FileSystem::get_path("/src/shaders/light.frag"));
 
-    glm::vec3 color(0.5f, 0.0f, 0.0f);
+    AmbientLight ambient_light(0.2f);
+    PointLight point_light(glm::vec3(4.0f, 1.0f, 1.0f), 0.5f);
+    Sphere light_sphere(0.2f, 3, WHITE_MATERIAL, Transform(point_light.position));
 
-    Sphere sphere(0.5f, 3, RED_MATERIAL, Transform(glm::vec3(4.0f, 0.0f, 0.0f)));
-    Rectangle rectangle(glm::vec3(1.0f), GREEN_MATERIAL, Transform(glm::vec3(2.0f, 0.0f, 0.0f)));
+    phong_shader.set_uniform("ambient", ambient_light.intensity);
+    phong_shader.set_uniform("light_pos", point_light.position);
+    phong_shader.set_uniform("light_intensity", point_light.intensity);
+
     Cylinder cylinder(0.5f, 1.0f, 32, BLUE_MATERIAL, Transform(glm::vec3(0.0f, 0.0f, 0.0f)));
     Icosahedron icosahedron(0.5f, Transform(glm::vec3(-2.0f, 0.0f, 0.0f)), YELLOW_MATERIAL);
+    Octahedron octahedron(0.5f, VIOLET_MATERIAL, Transform(glm::vec3(-6.0f, 0.0f, 0.0f)));
+    Rectangle rectangle(glm::vec3(1.0f), GREEN_MATERIAL, Transform(glm::vec3(2.0f, 0.0f, 0.0f)));
+    Sphere sphere(0.5f, 3, RED_MATERIAL, Transform(glm::vec3(4.0f, 0.0f, 0.0f)));
+    Tetrahedron tetrahedron(0.5f, CYAN_MATERIAL, Transform(glm::vec3(-4.0f, 0.0f, 0.0f)));
 
     glm::mat4 view;
     glm::mat4 projection = glm::perspective(static_cast<double>(camera.fov_radians), ASPECT_RATIO, 0.01, 100.0);
-    default_shader.set_uniform("projection", projection);
+    phong_shader.set_uniform("projection", projection);
+    light_shader.set_uniform("projection", projection);
     while (!glfwWindowShouldClose(window)) {
         process_input(window);
 
@@ -77,18 +92,27 @@ int main() {
         delta_time = current_frame_time - last_frame_time;
         last_frame_time = current_frame_time;
 
-        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         move_camera();
         view = glm::lookAt(camera.transform.position, camera.transform.position + camera.front, world_up);
-        default_shader.set_uniform("view", view);
+        phong_shader.set_uniform("view", view);
+        light_shader.set_uniform("view", view);
 
-        Renderer::draw(sphere, default_shader, sphere.depth);
-        Renderer::draw(rectangle, default_shader);
-        Renderer::draw(cylinder, default_shader);
-        Renderer::draw(icosahedron, default_shader);
+        point_light.position += glm::vec3(-0.015f, 0.0f, 0.0f) * sin(static_cast<float>(glfwGetTime()));
+        phong_shader.set_uniform("light_pos", point_light.position);
+        light_sphere.transform.position += glm::vec3(-0.015f, 0.0f, 0.0f) * sin(static_cast<float>(glfwGetTime()));
 
+        Renderer::draw(cylinder, phong_shader);
+        Renderer::draw(icosahedron, phong_shader);
+        Renderer::draw(octahedron, phong_shader);
+        Renderer::draw(rectangle, phong_shader);
+        Renderer::draw(sphere, phong_shader, sphere.depth);
+        Renderer::draw(tetrahedron, phong_shader);
+
+        Renderer::draw(light_sphere, light_shader, light_sphere.depth);
+        
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
