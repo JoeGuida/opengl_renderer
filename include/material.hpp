@@ -31,5 +31,6 @@ static BRDFMaterial BLUE_MATERIAL(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f), 
 static BRDFMaterial YELLOW_MATERIAL(glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(0.0f), 0.0f);
 static BRDFMaterial VIOLET_MATERIAL(glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(0.0f), 0.0f);
 static BRDFMaterial CYAN_MATERIAL(glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(0.0f), 0.0f);
+static BRDFMaterial WHITE_MATERIAL(glm::vec3(1.0f), glm::vec3(0.0f), 0.0f);
 
 #endif
