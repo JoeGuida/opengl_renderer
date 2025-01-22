@@ -2,15 +2,20 @@
 #define OPENGL_RENDERER_CAMERA_HPP
 #define GLM_ENABLE_EXPERIMENTAL
 
-#include <glm/geometric.hpp>
-#include <glm/gtx/rotate_vector.hpp>
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
+#include "glm/geometric.hpp"
+#include "glm/gtx/rotate_vector.hpp"
+#include "glm/vec2.hpp"
+#include "glm/vec3.hpp"
 
 #include "transform.hpp"
 
-class Camera {
-public:
+struct Camera {
+    float fov_radians;
+    glm::vec3 front;
+    glm::vec3 right;
+    glm::vec3 up;
+    Transform transform;
+
     Camera(const glm::vec3& front,
         const glm::vec3& world_up,
         float fov_radians,
@@ -38,12 +43,6 @@ public:
     }
 
     void rotate(const glm::vec2& delta);
-
-    float fov_radians;
-    glm::vec3 front;
-    glm::vec3 right;
-    glm::vec3 up;
-    Transform transform;
 };
 
 #endif

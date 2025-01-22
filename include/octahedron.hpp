@@ -3,13 +3,14 @@
 
 #include "material.hpp"
 #include "transform.hpp"
+#include "vertex.hpp"
 
 #include <array>
 
 class Octahedron {
 private:
 	std::array<uint32_t, 24> indices;
-	std::array<float, 36> vertices;
+	std::array<Vertex, 6> vertices;
 	float size;
 
 public:
@@ -18,15 +19,15 @@ public:
 
 	Octahedron(float size, const BRDFMaterial& material, const Transform& transform) :
 		size(size), material(material), transform(transform) {
-		float s = size / 2.0f;
+		float half_size = size / 2.0f;
 
 		vertices = {
-			-s, 0.0f, -s,    0.0f, 0.0f, 0.0f,
-			 s, 0.0f, -s,    0.0f, 0.0f, 0.0f,
-			-s, 0.0f,  s,    0.0f, 0.0f, 0.0f,
-			 s, 0.0f,  s,    0.0f, 0.0f, 0.0f,
-		     0.0f, s, 0.0f,  0.0f, 0.0f, 0.0f,
-			 0.0f, -s, 0.0f, 0.0f, 0.0f, 0.0f
+			Vertex(glm::vec3(-half_size, 0.0f, -half_size), glm::vec3(0.0f, 0.0f, 0.0f)),
+			Vertex(glm::vec3(half_size, 0.0f, -half_size),  glm::vec3(0.0f, 0.0f, 0.0f)),
+			Vertex(glm::vec3(-half_size, 0.0f,  half_size), glm::vec3(0.0f, 0.0f, 0.0f)),
+			Vertex(glm::vec3(half_size, 0.0f,  half_size),  glm::vec3(0.0f, 0.0f, 0.0f)),
+		    Vertex(glm::vec3(0.0f, half_size, 0.0f),        glm::vec3(0.0f, 0.0f, 0.0f)),
+			Vertex(glm::vec3(0.0f, -half_size, 0.0f),       glm::vec3(0.0f, 0.0f, 0.0f))
 		};
 
 		indices = {
@@ -41,8 +42,12 @@ public:
 		};
 	}
 
+	Octahedron(const Octahedron&) = default;
+	Octahedron(Octahedron&&) = default;
+	virtual ~Octahedron() = default;
+
 	std::array<uint32_t, 24> get_indices() const { return indices; }
-	std::array<float, 36> get_vertices() const { return vertices; }
+	std::array<Vertex, 6> get_vertices() const { return vertices; }
 };
 
 #endif

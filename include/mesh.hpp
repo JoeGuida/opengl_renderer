@@ -3,6 +3,7 @@
 
 #include "material.hpp"
 #include "transform.hpp"
+#include "vertex.hpp"
 
 #include <array>
 #include <fstream>
@@ -40,7 +41,7 @@ static std::unordered_map<std::string, OBJ_COMMAND> OBJ_COMMANDS {
 
 class Mesh {
 private:
-	std::vector<float> vertices;
+	std::vector<Vertex> vertices;
 	std::vector<uint32_t> indices;
 
 public:
@@ -51,13 +52,17 @@ public:
 		load_from_file(filepath); 
 	}
 
+	Mesh(const Mesh&) = default;
+	Mesh(Mesh&&) = default;
+	virtual ~Mesh() = default;
+
 	void load_from_file(const std::string& filepath, bool flip_yz_axis = false);
 	void execute_command(const OBJ_COMMAND& command, std::vector<std::string>& items);
 	void add_vertex(const std::vector<std::string>& items, float stride);
 	void add_face(std::vector<std::string>& items);
 
 	std::vector<uint32_t> get_indices() const { return indices; }
-	std::vector<float> get_vertices() const { return vertices; }
+	std::vector<Vertex> get_vertices() const { return vertices; }
 };
 
 #endif

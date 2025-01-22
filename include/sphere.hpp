@@ -14,6 +14,10 @@ struct Sphere {
 
 	Sphere(float radius, int depth, const BRDFMaterial& material, const Transform& transform) : 
 		radius(radius), depth(depth), material(material), transform(transform) {}
+
+	Sphere(const Sphere&) = default;
+	Sphere(Sphere&&) = default;
+	virtual ~Sphere() = default;
 };
 
 #endif

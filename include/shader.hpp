@@ -1,9 +1,9 @@
 #ifndef OPENGL_RENDERER_SHADER_HPP
 #define OPENGL_RENDERER_SHADER_HPP
 
-#include <glad/glad.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "glad/glad.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 #include <string>
 #include <fstream>
@@ -16,6 +16,11 @@ public:
     unsigned int ID;
 
     Shader(const std::string& vertexPath, const std::string& fragmentPath);
+
+    Shader(const Shader&) = default;
+    Shader(Shader&&) = default;
+    virtual ~Shader() = default;
+
     void set_uniform(const char* uniform_name, float value);
     void set_uniform(const char* uniform_name, double value);
     void set_uniform(const char* uniform_name, int value);

@@ -9,7 +9,7 @@
 class Tetrahedron {
 private:
 	std::array<uint32_t, 12> indices;
-	std::array<float, 24> vertices;
+	std::array<Vertex, 4> vertices;
 	float size;
 
 public:
@@ -18,13 +18,13 @@ public:
 
 	Tetrahedron(float size, const BRDFMaterial& material, const Transform& transform) : 
 		size(size), material(material), transform(transform) {
-		float s = size / 2.0f;
+		float half_size = size / 2.0f;
 
 		vertices = {
-			-s, -s, s, 0.0f, -1.0f, 0.0f,
-			s, -s, s, 0.0f, -1.0f, 0.0f,
-			0.0f, -s, -s, 0.0f, -1.0f, 0.0f,
-			0.0f,  s, s, 0.0f, 1.0f, 0.0f
+			Vertex(glm::vec3(-half_size, -half_size, half_size), glm::vec3(0.0f, -1.0f, 0.0f)),
+			Vertex(glm::vec3(half_size, -half_size, half_size), glm::vec3(0.0f, -1.0f, 0.0f)),
+			Vertex(glm::vec3(0.0f, -half_size, -half_size), glm::vec3(0.0f, -1.0f, 0.0f)),
+			Vertex(glm::vec3(0.0f,  half_size, half_size), glm::vec3(0.0f, 1.0f, 0.0f))
 		};
 
 		indices = {
@@ -35,8 +35,12 @@ public:
 		};
 	}
 
+	Tetrahedron(const Tetrahedron&) = default;
+	Tetrahedron(Tetrahedron&&) = default;
+	virtual ~Tetrahedron() = default;
+
 	std::array<uint32_t, 12> get_indices() const { return indices; }
-	std::array<float, 24> get_vertices() const { return vertices; }
+	std::array<Vertex, 4> get_vertices() const { return vertices; }
 };
 
 #endif

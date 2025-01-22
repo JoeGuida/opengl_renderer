@@ -14,6 +14,10 @@ struct Triangle {
 		points[2] = c;
 	}
 
+	Triangle(const Triangle&) = default;
+	Triangle(Triangle&&) = default;
+	virtual ~Triangle() = default;
+
 	glm::vec3 a() const { return points[0]; }
 	glm::vec3 b() const { return points[1]; }
 	glm::vec3 c() const { return points[2]; }

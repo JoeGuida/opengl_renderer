@@ -3,13 +3,14 @@
 
 #include "material.hpp"
 #include "transform.hpp"
+#include "vertex.hpp"
 
 #include <array>
 
 class Icosahedron {
 private:
     std::array<uint32_t, 60> indices;
-    std::array<float, 72> vertices;
+    std::array<Vertex, 12> vertices;
 
 public:
     float size;
@@ -18,18 +19,18 @@ public:
 
 	Icosahedron(float size, const Transform& transform, const BRDFMaterial& material) : size(size), transform(transform), material(material) {
         vertices = {
-           -size,  size,  0.0f, 0.0f, 0.0f, -1.0f,
-            size,  size,  0.0f, 0.0f, 0.0f, -1.0f,
-           -size, -size,  0.0f, 0.0f, 0.0f, -1.0f,
-            size, -size,  0.0f, 0.0f, 0.0f, -1.0f,
-            0.0f,  size, -size, 1.0f, 0.0f,  0.0f,
-            0.0f,  size,  size, 1.0f, 0.0f,  0.0f,
-            0.0f, -size, -size, 1.0f, 0.0f,  0.0f,
-            0.0f, -size,  size, 1.0f, 0.0f,  0.0f,
-           -size,  0.0f, -size, 0.0f, 1.0f,  0.0f,
-           -size,  0.0f,  size, 0.0f, 1.0f,  0.0f,
-            size,  0.0f, -size, 0.0f, 1.0f,  0.0f,
-            size,  0.0f,  size, 0.0f, 1.0f,  0.0f,
+           Vertex(glm::vec3(-size,  size,  0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
+           Vertex(glm::vec3(size,  size,  0.0f),  glm::vec3(0.0f, 0.0f, -1.0f)),
+           Vertex(glm::vec3(-size, -size,  0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
+           Vertex(glm::vec3(size, -size,  0.0f),  glm::vec3(0.0f, 0.0f, -1.0f)),
+           Vertex(glm::vec3(0.0f,  size, -size),  glm::vec3(1.0f, 0.0f,  0.0f)),
+           Vertex(glm::vec3(0.0f,  size,  size),  glm::vec3(1.0f, 0.0f,  0.0f)),
+           Vertex(glm::vec3(0.0f, -size, -size),  glm::vec3(1.0f, 0.0f,  0.0f)),
+           Vertex(glm::vec3(0.0f, -size,  size),  glm::vec3(1.0f, 0.0f,  0.0f)),
+           Vertex(glm::vec3(-size,  0.0f, -size), glm::vec3(0.0f, 1.0f,  0.0f)),
+           Vertex(glm::vec3(-size,  0.0f,  size), glm::vec3(0.0f, 1.0f,  0.0f)),
+           Vertex(glm::vec3(size,  0.0f, -size),  glm::vec3(0.0f, 1.0f,  0.0f)),
+           Vertex(glm::vec3(size,  0.0f,  size),  glm::vec3(0.0f, 1.0f,  0.0f)),
         };
 
         indices = {
@@ -56,8 +57,12 @@ public:
         };
 	}
 
+    Icosahedron(const Icosahedron&) = default;
+    Icosahedron(Icosahedron&&) = default;
+    virtual ~Icosahedron() = default;
+
     std::array<uint32_t, 60> get_indices() const { return indices; }
-    std::array<float, 72> get_vertices() const { return vertices; }
+    std::array<Vertex, 12> get_vertices() const { return vertices; }
 };
 
 #endif

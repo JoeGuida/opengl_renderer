@@ -1,13 +1,11 @@
 #ifndef OPENGL_RENDERER_RENDERER_HPP
 #define OPENGL_RENDERER_RENDERER_HPP
 
-#include <array>
-
-#include <glad/glad.h>
-#include <glm/vec3.hpp>
+#include "glad/glad.h"
+#include "glm/vec3.hpp"
 
 #include "cylinder.hpp"
- #include "icosahedron.hpp"
+#include "icosahedron.hpp"
 #include "mesh.hpp"
 #include "octahedron.hpp"
 #include "rectangle.hpp"
@@ -16,6 +14,8 @@
 #include "tetrahedron.hpp"
 #include "transform.hpp"
 #include "triangle.hpp"
+
+#include <array>
 
 class Renderer {
 private:
@@ -30,7 +30,7 @@ public:
     static void draw(const Mesh& mesh, Shader& shader);
     static void draw(const Octahedron& octahedron, Shader& shader);
     static void draw(const Rectangle& rectangle, Shader& shader);
-    static void draw(const Sphere& sphere, Shader& shader, int depth);
+    static void draw(const Sphere& sphere, Shader& shader);
     static void draw(const Tetrahedron& tetrahedron, Shader& shader);
     static std::vector<Triangle> subdivide_triangles(const std::vector<Triangle>& triangles, int depth);
 };

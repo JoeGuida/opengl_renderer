@@ -144,10 +144,12 @@
     <ClInclude Include="include\rectangle.hpp" />
     <ClInclude Include="include\renderer.hpp" />
     <ClInclude Include="include\shader.hpp" />
+    <ClInclude Include="include\shape.hpp" />
     <ClInclude Include="include\sphere.hpp" />
     <ClInclude Include="include\tetrahedron.hpp" />
     <ClInclude Include="include\transform.hpp" />
     <ClInclude Include="include\triangle.hpp" />
+    <ClInclude Include="include\vertex.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\lib\glad\src\glad.c" />
@@ -158,6 +160,8 @@
     <ClCompile Include="src\shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\shaders\depth.frag" />
+    <None Include="src\shaders\depth.vert" />
     <None Include="src\shaders\phong.frag" />
     <None Include="src\shaders\phong.vert" />
     <None Include="src\shaders\light.frag" />

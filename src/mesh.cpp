@@ -32,7 +32,7 @@ void Mesh::load_from_file(const std::string& filename, bool flip_yz_axis) {
 	// flip y and z axis of vertices
 	if (flip_yz_axis) {
 		for (int i = 0; i < vertices.size(); i += 6) {
-			float temp = vertices[i + 1];
+			Vertex temp = vertices[i + 1];
 			vertices[i + 1] = vertices[i + 2];
 			vertices[i + 2] = temp;
 		}
@@ -54,17 +54,12 @@ void Mesh::add_vertex(const std::vector<std::string>& items, float stride) {
 		return;
 	}
 
-	std::array<float, 3> vertex;
+	Vertex vertex(glm::vec3(0.0f), glm::vec3(0.0f));
 	for (int i = 1; i < items.size(); i++) {
-		vertex[i - 1] = std::stof(items[i]);
+		vertex.position[i - 1] = std::stof(items[i]);
 	}
+	vertices.push_back(vertex);
 
-	for (int i = 0; i < vertex.size(); i++) {
-		vertices.push_back(vertex[i]);
-	}
-	for (int i = 0; i < stride - vertex.size(); i++) {
-		vertices.push_back(0.0f);
-	}
 }
 
 void Mesh::add_face(std::vector<std::string>& items) {

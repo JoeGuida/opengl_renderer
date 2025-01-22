@@ -8,6 +8,10 @@ struct AmbientLight {
 	float intensity;
 
 	AmbientLight(float intensity) : intensity(intensity) {}
+
+	AmbientLight(const AmbientLight&) = default;
+	AmbientLight(AmbientLight&&) = default;
+	virtual ~AmbientLight() = default;
 };
 
 struct DirectionalLight {
@@ -16,6 +20,10 @@ struct DirectionalLight {
 
 	DirectionalLight(const glm::vec3& direction, float intensity) :
 		direction(glm::normalize(direction)), intensity(intensity) {}
+
+	DirectionalLight(const DirectionalLight&) = default;
+	DirectionalLight(DirectionalLight&&) = default;
+	virtual ~DirectionalLight() = default;
 };
 
 struct PointLight {
@@ -24,6 +32,10 @@ struct PointLight {
 
 	PointLight(const glm::vec3 position, float intensity) : 
 		position(position), intensity(intensity) {}
+
+	PointLight(const PointLight&) = default;
+	PointLight(PointLight&&) = default;
+	virtual ~PointLight() = default;
 };
 
 #endif
