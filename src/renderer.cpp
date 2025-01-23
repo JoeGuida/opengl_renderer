@@ -20,17 +20,21 @@ void Renderer::draw(const Cylinder& cylinder, Shader& shader) {
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
     glm::mat4 model(1.0f);
     model = glm::translate(model, cylinder.transform.position);
     shader.set_uniform("model", model);
-    shader.set_uniform("color", cylinder.material.diffuse);
+    shader.set_uniform("Material.diffuse", cylinder.material.diffuse);
+    shader.set_uniform("Material.specular", cylinder.material.specular);
+    shader.set_uniform("Material.alpha", cylinder.material.alpha);
 
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 }
 
 void Renderer::draw(const Icosahedron& icosahedron, Shader& shader) {
@@ -42,19 +46,23 @@ void Renderer::draw(const Icosahedron& icosahedron, Shader& shader) {
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
     glm::mat4 model(1.0f);
     model = glm::translate(model, icosahedron.transform.position);
     model = glm::rotate(model, icosahedron.transform.euler_angles.z, glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::scale(model, icosahedron.transform.scale);
     shader.set_uniform("model", model);
-    shader.set_uniform("color", icosahedron.material.diffuse);
+    shader.set_uniform("Material.diffuse", icosahedron.material.diffuse);
+    shader.set_uniform("Material.specular", icosahedron.material.specular);
+    shader.set_uniform("Material.alpha", icosahedron.material.alpha);
 
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 }
 
 void Renderer::draw(const Mesh& mesh, Shader& shader) {
@@ -66,19 +74,23 @@ void Renderer::draw(const Mesh& mesh, Shader& shader) {
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
     glm::mat4 model(1.0f);
     model = glm::translate(model, mesh.transform.position);
     model = glm::rotate(model, mesh.transform.euler_angles.z, glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::scale(model, mesh.transform.scale);
     shader.set_uniform("model", model);
-    shader.set_uniform("color", mesh.material.diffuse);
+    shader.set_uniform("Material.diffuse", mesh.material.diffuse);
+    shader.set_uniform("Material.specular", mesh.material.specular);
+    shader.set_uniform("Material.alpha", mesh.material.alpha);
 
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 }
 
 void Renderer::draw(const Octahedron& octahedron, Shader& shader) {
@@ -90,19 +102,23 @@ void Renderer::draw(const Octahedron& octahedron, Shader& shader) {
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
     glm::mat4 model(1.0f);
     model = glm::translate(model, octahedron.transform.position);
     model = glm::rotate(model, octahedron.transform.euler_angles.z, glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::scale(model, octahedron.transform.scale);
     shader.set_uniform("model", model);
-    shader.set_uniform("color", octahedron.material.diffuse);
+    shader.set_uniform("Material.diffuse", octahedron.material.diffuse);
+    shader.set_uniform("Material.specular", octahedron.material.specular);
+    shader.set_uniform("Material.alpha", octahedron.material.alpha);
 
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 }
 
 void Renderer::draw(const Rectangle& rectangle, Shader& shader) {
@@ -114,19 +130,23 @@ void Renderer::draw(const Rectangle& rectangle, Shader& shader) {
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
     glm::mat4 model(1.0f);
     model = glm::translate(model, rectangle.transform.position);
     model = glm::rotate(model, rectangle.transform.euler_angles.z, glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::scale(model, rectangle.transform.scale);
     shader.set_uniform("model", model);
-    shader.set_uniform("color", rectangle.material.diffuse);
+    shader.set_uniform("Material.diffuse", rectangle.material.diffuse);
+    shader.set_uniform("Material.specular", rectangle.material.specular);
+    shader.set_uniform("Material.alpha", rectangle.material.alpha);
 
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 }
 
 void Renderer::draw(const Sphere& sphere, Shader& shader) {
@@ -154,9 +174,9 @@ void Renderer::draw(const Sphere& sphere, Shader& shader) {
 
     int j = 0;
     for (int i = 0; i < triangles.size(); i++) {
-        Vertex v0(triangles[i].points[0] * sphere.radius, glm::vec3(0.0f));
-        Vertex v1(triangles[i].points[1] * sphere.radius, glm::vec3(0.0f));
-        Vertex v2(triangles[i].points[2] * sphere.radius, glm::vec3(0.0f));
+        Vertex v0(triangles[i].points[0] * sphere.radius, glm::vec3(0.0f), glm::vec2(0.0f, 0.0f));
+        Vertex v1(triangles[i].points[1] * sphere.radius, glm::vec3(0.0f), glm::vec2(0.0f, 0.0f));
+        Vertex v2(triangles[i].points[2] * sphere.radius, glm::vec3(0.0f), glm::vec2(0.0f, 0.0f));
         vertices.push_back(v0);
         vertices.push_back(v1);
         vertices.push_back(v2);
@@ -171,16 +191,20 @@ void Renderer::draw(const Sphere& sphere, Shader& shader) {
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
     glm::mat4 model(1.0f);
     model = glm::translate(model, sphere.transform.position);
     shader.set_uniform("model", model);
-    shader.set_uniform("color", sphere.material.diffuse);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    shader.set_uniform("Material.diffuse", sphere.material.diffuse);
+    shader.set_uniform("Material.specular", sphere.material.specular);
+    shader.set_uniform("Material.alpha", sphere.material.alpha);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 }
 
 void Renderer::draw(const Tetrahedron& tetrahedron, Shader& shader) {
@@ -192,19 +216,23 @@ void Renderer::draw(const Tetrahedron& tetrahedron, Shader& shader) {
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
     glm::mat4 model(1.0f);
     model = glm::translate(model, tetrahedron.transform.position);
     model = glm::rotate(model, tetrahedron.transform.euler_angles.z, glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::scale(model, tetrahedron.transform.scale);
     shader.set_uniform("model", model);
-    shader.set_uniform("color", tetrahedron.material.diffuse);
+    shader.set_uniform("Material.diffuse", tetrahedron.material.diffuse);
+    shader.set_uniform("Material.specular", tetrahedron.material.specular);
+    shader.set_uniform("Material.alpha", tetrahedron.material.alpha);
 
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 }
 
 std::vector<Triangle> Renderer::subdivide_triangles(const std::vector<Triangle>& triangles, int depth) {

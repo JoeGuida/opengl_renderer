@@ -1,6 +1,9 @@
 #ifndef OPENGL_RENDERER_TETRAHEDRON_HPP
 #define OPENGL_RENDERER_TETRAHEDRON_HPP
 
+#include "glm/vec2.hpp"
+#include "glm/vec3.hpp"
+
 #include "material.hpp"
 #include "transform.hpp"
 
@@ -21,10 +24,10 @@ public:
 		float half_size = size / 2.0f;
 
 		vertices = {
-			Vertex(glm::vec3(-half_size, -half_size, half_size), glm::vec3(0.0f, -1.0f, 0.0f)),
-			Vertex(glm::vec3(half_size, -half_size, half_size), glm::vec3(0.0f, -1.0f, 0.0f)),
-			Vertex(glm::vec3(0.0f, -half_size, -half_size), glm::vec3(0.0f, -1.0f, 0.0f)),
-			Vertex(glm::vec3(0.0f,  half_size, half_size), glm::vec3(0.0f, 1.0f, 0.0f))
+			Vertex(glm::vec3(-half_size, -half_size,  half_size), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 0.0f)),
+			Vertex(glm::vec3(half_size, -half_size,  half_size),  glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 0.0f)),
+			Vertex(glm::vec3(0.0f, -half_size, -half_size),       glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 0.0f)),
+			Vertex(glm::vec3(0.0f,  half_size,  half_size),       glm::vec3(0.0f, 1.0f, 0.0f),  glm::vec2(0.0f, 0.0f))
 		};
 
 		indices = {

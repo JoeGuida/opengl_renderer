@@ -1,6 +1,9 @@
 #ifndef OPENGL_RENDERER_OCTAHEDRON_HPP
 #define OPENGL_RENDERER_OCTAHEDRON_HPP
 
+#include "glm/vec2.hpp"
+#include "glm/vec3.hpp"
+
 #include "material.hpp"
 #include "transform.hpp"
 #include "vertex.hpp"
@@ -22,12 +25,12 @@ public:
 		float half_size = size / 2.0f;
 
 		vertices = {
-			Vertex(glm::vec3(-half_size, 0.0f, -half_size), glm::vec3(0.0f, 0.0f, 0.0f)),
-			Vertex(glm::vec3(half_size, 0.0f, -half_size),  glm::vec3(0.0f, 0.0f, 0.0f)),
-			Vertex(glm::vec3(-half_size, 0.0f,  half_size), glm::vec3(0.0f, 0.0f, 0.0f)),
-			Vertex(glm::vec3(half_size, 0.0f,  half_size),  glm::vec3(0.0f, 0.0f, 0.0f)),
-		    Vertex(glm::vec3(0.0f, half_size, 0.0f),        glm::vec3(0.0f, 0.0f, 0.0f)),
-			Vertex(glm::vec3(0.0f, -half_size, 0.0f),       glm::vec3(0.0f, 0.0f, 0.0f))
+			Vertex(glm::vec3(-half_size, 0.0f, -half_size), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)),
+			Vertex(glm::vec3(half_size, 0.0f, -half_size),  glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)),
+			Vertex(glm::vec3(-half_size, 0.0f,  half_size), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)),
+			Vertex(glm::vec3(half_size, 0.0f,  half_size),  glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)),
+		    Vertex(glm::vec3(0.0f, half_size, 0.0f),        glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)),
+			Vertex(glm::vec3(0.0f, -half_size, 0.0f),       glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f))
 		};
 
 		indices = {

@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClInclude Include="include\camera.hpp" />
     <ClInclude Include="include\cylinder.hpp" />
+    <ClInclude Include="include\fbo.hpp" />
     <ClInclude Include="include\filesystem.hpp" />
     <ClInclude Include="include\icosahedron.hpp" />
     <ClInclude Include="include\light.hpp" />
@@ -162,6 +163,10 @@
   <ItemGroup>
     <None Include="src\shaders\depth.frag" />
     <None Include="src\shaders\depth.vert" />
+    <None Include="src\shaders\g_buffer.frag" />
+    <None Include="src\shaders\g_buffer.vert" />
+    <None Include="src\shaders\lighting_pass.frag" />
+    <None Include="src\shaders\lighting_pass.vert" />
     <None Include="src\shaders\phong.frag" />
     <None Include="src\shaders\phong.vert" />
     <None Include="src\shaders\light.frag" />

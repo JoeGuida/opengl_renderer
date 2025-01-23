@@ -4,6 +4,7 @@
 
 #define PI 3.14159265358979323846
 
+#include "glm/vec2.hpp"
 #include "glm/vec3.hpp"
 #include "glm/gtx/rotate_vector.hpp"
 
@@ -32,10 +33,10 @@ public:
 		float angle = 2 * PI / (segments - 1);
 
 		// bottom circle
-		vertices.push_back(Vertex(bottom_center, glm::vec3(0.0f, -1.0f, 0.0f)));
+		vertices.push_back(Vertex(bottom_center, glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
 		for (int i = 0; i < segments - 1; i++) {
 			glm::vec3 v = glm::rotateY(bottom_center + glm::vec3(radius, 0.0f, 0.0f), angle * i);
-			vertices.push_back(Vertex(v, glm::vec3(v.x, 0.0f, v.z)));
+			vertices.push_back(Vertex(v, glm::vec3(v.x, 0.0f, v.z), glm::vec2(0.0f, 0.0f)));
 		}
 		for (int i = 1; i < vertices.size() - 1; i++) {
 			indices.push_back(0);
@@ -48,11 +49,11 @@ public:
 		int n = vertices.size();
 
 		// top circle
-		vertices.push_back(Vertex(top_center, glm::vec3(0.0f, 1.0f, 0.0f)));
+		vertices.push_back(Vertex(top_center, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
 		int s = indices[indices.size() - 2] + 1;
 		for (int i = 0; i < segments - 1; i++) {
 			glm::vec3 v = glm::rotateY(top_center + glm::vec3(radius, 0.0f, 0.0f), angle * i);
-			vertices.push_back(Vertex(v, glm::vec3(v.x, 0.0f, v.z)));
+			vertices.push_back(Vertex(v, glm::vec3(v.x, 0.0f, v.z), glm::vec2(0.0f, 0.0f)));
 		}
 		for (int i = n; i < vertices.size() - 1; i++) {
 			indices.push_back(s);

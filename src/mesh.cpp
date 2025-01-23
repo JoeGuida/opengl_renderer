@@ -54,7 +54,7 @@ void Mesh::add_vertex(const std::vector<std::string>& items, float stride) {
 		return;
 	}
 
-	Vertex vertex(glm::vec3(0.0f), glm::vec3(0.0f));
+	Vertex vertex(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec2(0.0f));
 	for (int i = 1; i < items.size(); i++) {
 		vertex.position[i - 1] = std::stof(items[i]);
 	}

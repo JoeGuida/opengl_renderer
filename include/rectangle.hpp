@@ -1,6 +1,7 @@
 #ifndef OPENGL_RENDERER_RECTANGLE_HPP
 #define OPENGL_RENDERER_RECTANGLE_HPP
 
+#include "glm/vec2.hpp"
 #include "glm/vec3.hpp"
 
 #include "material.hpp"
@@ -25,40 +26,40 @@ public:
 
         vertices = {
             // FRONT
-            Vertex(glm::vec3(-half_size.x,  half_size.y, -half_size.z), glm::vec3(0.0f, 0.0f, -1.0f)),
-            Vertex(glm::vec3(half_size.x,  half_size.y, -half_size.z),  glm::vec3(0.0f, 0.0f, -1.0f)),
-            Vertex(glm::vec3(-half_size.x, -half_size.y, -half_size.z), glm::vec3(0.0f, 0.0f, -1.0f)),
-            Vertex(glm::vec3(half_size.x, -half_size.y, -half_size.z),  glm::vec3(0.0f, 0.0f, -1.0f)),
+            Vertex(glm::vec3(-half_size.x,  half_size.y, -half_size.z), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 1.0f)),
+            Vertex(glm::vec3( half_size.x,  half_size.y, -half_size.z), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 1.0f)),
+            Vertex(glm::vec3(-half_size.x, -half_size.y, -half_size.z), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 0.0f)),
+            Vertex(glm::vec3( half_size.x, -half_size.y, -half_size.z), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 0.0f)),
 
             // RIGHT
-            Vertex(glm::vec3(half_size.x,  half_size.y, -half_size.z), glm::vec3(1.0f, 0.0f, 0.0f)),
-            Vertex(glm::vec3(half_size.x,  half_size.y,  half_size.z), glm::vec3(1.0f, 0.0f, 0.0f)),
-            Vertex(glm::vec3(half_size.x, -half_size.y, -half_size.z), glm::vec3(1.0f, 0.0f, 0.0f)),
-            Vertex(glm::vec3(half_size.x, -half_size.y,  half_size.z), glm::vec3(1.0f, 0.0f, 0.0f)),
+            Vertex(glm::vec3(half_size.x,  half_size.y, -half_size.z), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 1.0f)),
+            Vertex(glm::vec3(half_size.x,  half_size.y,  half_size.z), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f)),
+            Vertex(glm::vec3(half_size.x, -half_size.y, -half_size.z), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)),
+            Vertex(glm::vec3(half_size.x, -half_size.y,  half_size.z), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f)),
 
             // BACK
-            Vertex(glm::vec3(half_size.x,  half_size.y, half_size.z),  glm::vec3(0.0f, 0.0f, 1.0f)),
-            Vertex(glm::vec3(-half_size.x,  half_size.y, half_size.z), glm::vec3(0.0f, 0.0f, 1.0f)),
-            Vertex(glm::vec3(half_size.x, -half_size.y, half_size.z),  glm::vec3(0.0f, 0.0f, 1.0f)),
-            Vertex(glm::vec3(-half_size.x, -half_size.y, half_size.z), glm::vec3(0.0f, 0.0f, 1.0f)),
+            Vertex(glm::vec3( half_size.x,  half_size.y, half_size.z), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 1.0f)),
+            Vertex(glm::vec3(-half_size.x,  half_size.y, half_size.z), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 1.0f)),
+            Vertex(glm::vec3( half_size.x, -half_size.y, half_size.z), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f)),
+            Vertex(glm::vec3(-half_size.x, -half_size.y, half_size.z), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 0.0f)),
 
             // LEFT
-            Vertex(glm::vec3(-half_size.x,  half_size.y,  half_size.z), glm::vec3(-1.0f, 0.0f, 0.0f)),
-            Vertex(glm::vec3(-half_size.x,  half_size.y, -half_size.z), glm::vec3(-1.0f, 0.0f, 0.0f)),
-            Vertex(glm::vec3(-half_size.x, -half_size.y,  half_size.z), glm::vec3(-1.0f, 0.0f, 0.0f)),
-            Vertex(glm::vec3(-half_size.x, -half_size.y, -half_size.z), glm::vec3(-1.0f, 0.0f, 0.0f)),
+            Vertex(glm::vec3(-half_size.x,  half_size.y,  half_size.z), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 1.0f)),
+            Vertex(glm::vec3(-half_size.x,  half_size.y, -half_size.z), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f)),
+            Vertex(glm::vec3(-half_size.x, -half_size.y,  half_size.z), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)),
+            Vertex(glm::vec3(-half_size.x, -half_size.y, -half_size.z), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f)),
 
             // TOP
-            Vertex(glm::vec3(-half_size.x,  half_size.y,  half_size.z), glm::vec3(0.0f, 1.0f, 0.0f)),
-            Vertex(glm::vec3(half_size.x,  half_size.y,  half_size.z),  glm::vec3(0.0f, 1.0f, 0.0f)),
-            Vertex(glm::vec3(-half_size.x,  half_size.y, -half_size.z), glm::vec3(0.0f, 1.0f, 0.0f)),
-            Vertex(glm::vec3(half_size.x,  half_size.y, -half_size.z),  glm::vec3(0.0f, 1.0f, 0.0f)),
+            Vertex(glm::vec3(-half_size.x,  half_size.y,  half_size.z), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.0f)),
+            Vertex(glm::vec3( half_size.x,  half_size.y,  half_size.z), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1.0f, 1.0f)),
+            Vertex(glm::vec3(-half_size.x,  half_size.y, -half_size.z), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 0.0f)),
+            Vertex(glm::vec3( half_size.x,  half_size.y, -half_size.z), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1.0f, 0.0f)),
 
             // BOTTOM
-            Vertex(glm::vec3(-half_size.x, -half_size.y, -half_size.z), glm::vec3(0.0f, -1.0f, 0.0f)),
-            Vertex(glm::vec3(half_size.x, -half_size.y, -half_size.z),  glm::vec3(0.0f, -1.0f, 0.0f)),
-            Vertex(glm::vec3(-half_size.x, -half_size.y,  half_size.z), glm::vec3(0.0f, -1.0f, 0.0f)),
-            Vertex(glm::vec3(half_size.x, -half_size.y,  half_size.z),  glm::vec3(0.0f, -1.0f, 0.0f))
+            Vertex(glm::vec3(-half_size.x, -half_size.y, -half_size.z), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 1.0f)),
+            Vertex(glm::vec3( half_size.x, -half_size.y, -half_size.z), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(1.0f, 1.0f)),
+            Vertex(glm::vec3(-half_size.x, -half_size.y,  half_size.z), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 0.0f)),
+            Vertex(glm::vec3( half_size.x, -half_size.y,  half_size.z), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(1.0f, 0.0f))
         };
 
         indices = {
