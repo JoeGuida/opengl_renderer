@@ -12,7 +12,7 @@ void Shader::set_uniform(const char* uniform_name, double value) {
     glUniform1d(glGetUniformLocation(id, uniform_name), value);
 }
 
-void Shader::set_uniform(const char* uniform_name, int value) {
+void Shader::set_uniform(const char* uniform_name, uint32_t value) {
     use();
     glUniform1i(glGetUniformLocation(id, uniform_name), value);
 }

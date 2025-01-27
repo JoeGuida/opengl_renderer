@@ -70,23 +70,23 @@ int main() {
     std::shared_ptr<Shader> g_buffer_shader = ShaderFactory::create("g_buffer");
     std::shared_ptr<Shader> lighting_pass_shader = ShaderFactory::create("lighting_pass");
     std::shared_ptr<Shader> light_shader = ShaderFactory::create("light");
+    std::shared_ptr<Shader> quad_shader = ShaderFactory::create("quad");
     
     std::vector<std::shared_ptr<Shader>> shaders{ 
         blinn_phong,
         g_buffer_shader,
         lighting_pass_shader,
-        light_shader
+        light_shader,
+        quad_shader
     };
 
-    BRDFMaterial RED_MATERIAL(ShaderFactory::get("blinn-phong"),    glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.0f, 256);
-    BRDFMaterial GREEN_MATERIAL(ShaderFactory::get("blinn-phong"),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 256);
-    BRDFMaterial BLUE_MATERIAL(ShaderFactory::get("blinn-phong"),   glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.0f, 256);
-    BRDFMaterial YELLOW_MATERIAL(ShaderFactory::get("blinn-phong"), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), 0.0f, 256);
-    BRDFMaterial VIOLET_MATERIAL(ShaderFactory::get("blinn-phong"), glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(1.0f, 0.0f, 1.0f), 0.0f, 256);
-    BRDFMaterial CYAN_MATERIAL(ShaderFactory::get("blinn-phong"),   glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(0.0f, 1.0f, 1.0f), 0.0f, 256);
+    BRDFMaterial RED_MATERIAL(ShaderFactory::get("g_buffer"),    glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.0f, 256);
+    BRDFMaterial GREEN_MATERIAL(ShaderFactory::get("g_buffer"),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 256);
+    BRDFMaterial BLUE_MATERIAL(ShaderFactory::get("g_buffer"),   glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.0f, 256);
+    BRDFMaterial YELLOW_MATERIAL(ShaderFactory::get("g_buffer"), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), 0.0f, 256);
+    BRDFMaterial VIOLET_MATERIAL(ShaderFactory::get("g_buffer"), glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(1.0f, 0.0f, 1.0f), 0.0f, 256);
+    BRDFMaterial CYAN_MATERIAL(ShaderFactory::get("g_buffer"),   glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(0.0f, 1.0f, 1.0f), 0.0f, 256);
     BRDFMaterial WHITE_MATERIAL(ShaderFactory::get("light"),        glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.0f, 256);
-
-
 
     Cylinder cylinder(0.5f, 1.0f, 32, BLUE_MATERIAL, Transform(glm::vec3(0.0f, 0.0f, 0.0f)));
     Icosahedron icosahedron(0.5f, Transform(glm::vec3(-2.0f, 0.0f, 0.0f)), YELLOW_MATERIAL);
@@ -102,6 +102,8 @@ int main() {
     glm::mat4 view;
     glm::mat4 projection = glm::perspective(static_cast<double>(camera.fov_radians), ASPECT_RATIO, CAMERA_NEAR, CAMERA_FAR);
     
+    FBO fbo(SCREEN_WIDTH, SCREEN_HEIGHT);
+
     for (const std::shared_ptr<Shader>& shader : shaders) {
         shader->set_uniform("ambient_light", ambient_light.intensity);
         shader->set_uniform("projection", projection);
@@ -112,13 +114,37 @@ int main() {
         }
     }
 
-    GREEN_MATERIAL.shader->set_uniform("ambient_light", ambient_light.intensity);
-    GREEN_MATERIAL.shader->set_uniform("projection", projection);
-    GREEN_MATERIAL.shader->set_uniform("lights[0].position", point_lights[0].intensity);
-    GREEN_MATERIAL.shader->set_uniform("material.diffuse", GREEN_MATERIAL.diffuse);
-    GREEN_MATERIAL.shader->set_uniform("material.specular", GREEN_MATERIAL.specular);
-    GREEN_MATERIAL.shader->set_uniform("material.specularity", GREEN_MATERIAL.specularity);
-    GREEN_MATERIAL.shader->set_uniform("material.alpha", GREEN_MATERIAL.alpha);
+    // -------------------------------------------------------------------------------------------------------------------------------------------------
+
+    // The fullscreen quad's FBO
+    GLuint quad_VertexArrayID;
+    glGenVertexArrays(1, &quad_VertexArrayID);
+    glBindVertexArray(quad_VertexArrayID);
+
+    static const GLfloat g_quad_vertex_buffer_data[] = {
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+         1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+         1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+         1.0f,  1.0f, 0.0f, 1.0f, 1.0f
+    };
+
+    GLuint quad_vertexbuffer;
+    glGenBuffers(1, &quad_vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+    // Create and compile our GLSL program from the shaders
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, fbo.rendered_texture);
+    quad_shader->set_uniform("rendered_texture", fbo.rendered_texture);
+
+    // -------------------------------------------------------------------------------------------------------------------------------------------------
 
     while (!glfwWindowShouldClose(window)) {
         process_input(window);
@@ -126,6 +152,11 @@ int main() {
         current_frame_time = static_cast<float>(glfwGetTime());
         delta_time = current_frame_time - last_frame_time;
         last_frame_time = current_frame_time;
+
+        fbo.bind();
+        glEnable(GL_DEPTH_TEST);
+        GLenum draw_buffers[1] = { GL_COLOR_ATTACHMENT0 };
+        glDrawBuffers(1, draw_buffers);
 
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -144,9 +175,6 @@ int main() {
             }
         }
 
-        GREEN_MATERIAL.shader->set_uniform("view", view);
-        GREEN_MATERIAL.shader->set_uniform("camera_pos", camera.transform.position);
-        GREEN_MATERIAL.shader->set_uniform("lights[0].position", point_lights[0].position);
 
         Renderer::draw(cylinder);
         Renderer::draw(icosahedron);
@@ -154,7 +182,13 @@ int main() {
         Renderer::draw(rectangle);
         Renderer::draw(sphere);
         Renderer::draw(tetrahedron);
-        Renderer::draw(point_lights[0]);
+        fbo.unbind();
+
+        glDisable(GL_DEPTH_TEST);
+        quad_shader->use();
+        glBindVertexArray(quad_VertexArrayID);
+        glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

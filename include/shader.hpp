@@ -27,7 +27,7 @@ public:
 
     void set_uniform(const char* uniform_name, float value);
     void set_uniform(const char* uniform_name, double value);
-    void set_uniform(const char* uniform_name, int value);
+    void set_uniform(const char* uniform_name, uint32_t value);
     void set_uniform(const char* uniform_name, const glm::mat4& value);
     void set_uniform(const char* uniform_name, const glm::vec3& value);
     void use();

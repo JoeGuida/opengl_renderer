@@ -171,6 +171,8 @@
     <None Include="src\shaders\blinn-phong.vert" />
     <None Include="src\shaders\light.frag" />
     <None Include="src\shaders\light.vert" />
+    <None Include="src\shaders\quad.frag" />
+    <None Include="src\shaders\quad.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
