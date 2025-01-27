@@ -1,3 +1,7 @@
+#define GLM_ENABLE_EXPERIMENTAL
+
+#include "glm/vec3.hpp"
+#include "glm/gtx/rotate_vector.hpp"
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
@@ -62,76 +66,60 @@ int main() {
     GLFWwindow* window = initialize_window();
     Renderer::initialize();
 
-    Shader g_buffer_shader(
-        FileSystem::get_path("/src/shaders/g_buffer.vert"),
-        FileSystem::get_path("/src/shaders/g_buffer.frag"));
-    Shader lighting_pass_shader(
-        FileSystem::get_path("/src/shaders/lighting_pass.vert"),
-        FileSystem::get_path("/src/shaders/lighting_pass.frag"));
+    std::shared_ptr<Shader> blinn_phong = ShaderFactory::create("blinn-phong");
+    std::shared_ptr<Shader> g_buffer_shader = ShaderFactory::create("g_buffer");
+    std::shared_ptr<Shader> lighting_pass_shader = ShaderFactory::create("lighting_pass");
+    std::shared_ptr<Shader> light_shader = ShaderFactory::create("light");
     
-    std::vector<Shader> shaders{ 
+    std::vector<std::shared_ptr<Shader>> shaders{ 
+        blinn_phong,
         g_buffer_shader,
-        lighting_pass_shader
+        lighting_pass_shader,
+        light_shader
     };
 
-    AmbientLight ambient_light(0.2f);
-    PointLight point_light(glm::vec3(4.0f, 1.0f, 1.0f), 0.5f);
-    Sphere light_sphere(0.2f, 3, WHITE_MATERIAL, Transform(point_light.position));
+    BRDFMaterial RED_MATERIAL(ShaderFactory::get("blinn-phong"),    glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.0f, 256);
+    BRDFMaterial GREEN_MATERIAL(ShaderFactory::get("blinn-phong"),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 256);
+    BRDFMaterial BLUE_MATERIAL(ShaderFactory::get("blinn-phong"),   glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.0f, 256);
+    BRDFMaterial YELLOW_MATERIAL(ShaderFactory::get("blinn-phong"), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), 0.0f, 256);
+    BRDFMaterial VIOLET_MATERIAL(ShaderFactory::get("blinn-phong"), glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(1.0f, 0.0f, 1.0f), 0.0f, 256);
+    BRDFMaterial CYAN_MATERIAL(ShaderFactory::get("blinn-phong"),   glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(0.0f, 1.0f, 1.0f), 0.0f, 256);
+    BRDFMaterial WHITE_MATERIAL(ShaderFactory::get("light"),        glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.0f, 256);
+
+
 
     Cylinder cylinder(0.5f, 1.0f, 32, BLUE_MATERIAL, Transform(glm::vec3(0.0f, 0.0f, 0.0f)));
     Icosahedron icosahedron(0.5f, Transform(glm::vec3(-2.0f, 0.0f, 0.0f)), YELLOW_MATERIAL);
     Octahedron octahedron(0.5f, VIOLET_MATERIAL, Transform(glm::vec3(-6.0f, 0.0f, 0.0f)));
     Rectangle rectangle(glm::vec3(1.0f), GREEN_MATERIAL, Transform(glm::vec3(2.0f, 0.0f, 0.0f)));
-    
     Sphere sphere(0.5f, 3, RED_MATERIAL, Transform(glm::vec3(4.0f, 0.0f, 0.0f)));
     Tetrahedron tetrahedron(0.5f, CYAN_MATERIAL, Transform(glm::vec3(-4.0f, 0.0f, 0.0f)));
 
-    // ------------------------------------------------------------------------------------------------------------------------
-    
-    FBO fbo(SCREEN_WIDTH, SCREEN_HEIGHT);
-
-    // ------------------------------------------------------------------------------------------------------------------------
-
-    float rectangleVertices[] = {
-         1.0f, -1.0f, 0.0f,     0.0f, 0.0f, -1.0f,     1.0f, 0.0f,
-        -1.0f, -1.0f, 0.0f,     0.0f, 0.0f, -1.0f,     0.0f, 0.0f,
-        -1.0f,  1.0f, 0.0f,     0.0f, 0.0f, -1.0f,     0.0f, 1.0f,
-
-         1.0f,  1.0f, 0.0f,     0.0f, 0.0f, -1.0f,     1.0f, 1.0f,
-         1.0f, -1.0f, 0.0f,     0.0f, 0.0f, -1.0f,     1.0f, 0.0f,
-        -1.0f,  1.0f, 0.0f,     0.0f, 0.0f, -1.0f,     0.0f, 1.0f
-    };
-
-    uint32_t VAO;
-    uint32_t VBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(rectangleVertices), &rectangleVertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-    
-    // ------------------------------------------------------------------------------------------------------------------------
+    AmbientLight ambient_light(0.2f);
+    PointLight point_light(rectangle.transform.position + glm::vec3(0.0f, 1.0f, 0.0f), 0.5f, WHITE_MATERIAL);
+    std::array<PointLight, 1> point_lights{ point_light };
 
     glm::mat4 view;
     glm::mat4 projection = glm::perspective(static_cast<double>(camera.fov_radians), ASPECT_RATIO, CAMERA_NEAR, CAMERA_FAR);
     
-    for (Shader& shader : shaders) {
-        shader.set_uniform("projection", projection);
-        shader.set_uniform("eye_position", camera.transform.position);
-        shader.set_uniform("light_position", point_light.position);
-        shader.set_uniform("brightness", point_light.intensity);
-        shader.set_uniform("width", SCREEN_WIDTH);
-        shader.set_uniform("height", SCREEN_HEIGHT);
+    for (const std::shared_ptr<Shader>& shader : shaders) {
+        shader->set_uniform("ambient_light", ambient_light.intensity);
+        shader->set_uniform("projection", projection);
+
+        for (int i = 0; i < point_lights.size(); i++) {
+            std::string uniform = "lights[" + std::to_string(i) + "].intensity";
+            shader->set_uniform(uniform.c_str(), point_lights[i].intensity);
+        }
     }
-    
-    lighting_pass_shader.use();
-    lighting_pass_shader.set_uniform("screenTexture", 0);
+
+    GREEN_MATERIAL.shader->set_uniform("ambient_light", ambient_light.intensity);
+    GREEN_MATERIAL.shader->set_uniform("projection", projection);
+    GREEN_MATERIAL.shader->set_uniform("lights[0].position", point_lights[0].intensity);
+    GREEN_MATERIAL.shader->set_uniform("material.diffuse", GREEN_MATERIAL.diffuse);
+    GREEN_MATERIAL.shader->set_uniform("material.specular", GREEN_MATERIAL.specular);
+    GREEN_MATERIAL.shader->set_uniform("material.specularity", GREEN_MATERIAL.specularity);
+    GREEN_MATERIAL.shader->set_uniform("material.alpha", GREEN_MATERIAL.alpha);
+
     while (!glfwWindowShouldClose(window)) {
         process_input(window);
 
@@ -139,36 +127,34 @@ int main() {
         delta_time = current_frame_time - last_frame_time;
         last_frame_time = current_frame_time;
 
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo.id);
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_DEPTH_TEST);
         
         move_camera();
         view = glm::lookAt(camera.transform.position, camera.transform.position + camera.front, world_up);
-        point_light.position += glm::vec3(-0.015f, 0.0f, 0.0f) * sin(static_cast<float>(glfwGetTime()));
-        light_sphere.transform.position += glm::vec3(-0.015f, 0.0f, 0.0f) * sin(static_cast<float>(glfwGetTime()));
+        point_lights[0].position = glm::rotate(rectangle.transform.position + glm::vec3(0.0f, 1.0f, 0.0f), static_cast<float>(PI * 2 / 5.0 * glfwGetTime()), glm::vec3(1.0f, 0.0f, 0.0f));
 
-        for (Shader& shader : shaders) {
-            shader.set_uniform("view", view);
+        for (const std::shared_ptr<Shader>& shader : shaders) {
+            shader->set_uniform("view", view);
+            shader->set_uniform("camera_pos", camera.transform.position);
+
+            for (int i = 0; i < point_lights.size(); i++) {
+                std::string uniform = "lights[" + std::to_string(i) + "].position";
+                shader->set_uniform(uniform.c_str(), point_lights[i].position);
+            }
         }
 
-        lighting_pass_shader.use();
-        lighting_pass_shader.set_uniform("screen_texture", static_cast<int>(fbo.g_normal)); 
+        GREEN_MATERIAL.shader->set_uniform("view", view);
+        GREEN_MATERIAL.shader->set_uniform("camera_pos", camera.transform.position);
+        GREEN_MATERIAL.shader->set_uniform("lights[0].position", point_lights[0].position);
 
-        Renderer::draw(cylinder, g_buffer_shader);
-        Renderer::draw(icosahedron, g_buffer_shader);
-        Renderer::draw(octahedron, g_buffer_shader);
-        Renderer::draw(rectangle, g_buffer_shader);
-        Renderer::draw(sphere, g_buffer_shader);
-        Renderer::draw(tetrahedron, g_buffer_shader);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        lighting_pass_shader.use();
-        glBindVertexArray(VAO);
-        glDisable(GL_DEPTH_TEST);
-        glBindTexture(GL_TEXTURE_2D, fbo.g_normal);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        Renderer::draw(cylinder);
+        Renderer::draw(icosahedron);
+        Renderer::draw(octahedron);
+        Renderer::draw(rectangle);
+        Renderer::draw(sphere);
+        Renderer::draw(tetrahedron);
+        Renderer::draw(point_lights[0]);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

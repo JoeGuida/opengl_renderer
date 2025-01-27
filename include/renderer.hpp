@@ -6,6 +6,7 @@
 
 #include "cylinder.hpp"
 #include "icosahedron.hpp"
+#include "light.hpp"
 #include "mesh.hpp"
 #include "octahedron.hpp"
 #include "rectangle.hpp"
@@ -25,13 +26,14 @@ private:
 
 public:
     static void initialize();
-    static void draw(const Cylinder& cylinder, Shader& shader);
-    static void draw(const Icosahedron& icosahedron, Shader& shader);
-    static void draw(const Mesh& mesh, Shader& shader);
-    static void draw(const Octahedron& octahedron, Shader& shader);
-    static void draw(const Rectangle& rectangle, Shader& shader);
-    static void draw(const Sphere& sphere, Shader& shader);
-    static void draw(const Tetrahedron& tetrahedron, Shader& shader);
+    static void draw(const Cylinder& cylinder);
+    static void draw(const Icosahedron& icosahedron);
+    static void draw(const Mesh& mesh);
+    static void draw(const Octahedron& octahedron);
+    static void draw(PointLight& point_light);
+    static void draw(const Rectangle& rectangle);
+    static void draw(const Sphere& sphere);
+    static void draw(const Tetrahedron& tetrahedron);
     static std::vector<Triangle> subdivide_triangles(const std::vector<Triangle>& triangles, int depth);
 };
 

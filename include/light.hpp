@@ -4,6 +4,8 @@
 #include "glm/vec3.hpp"
 #include "glm/geometric.hpp"
 
+#include "material.hpp"
+
 struct AmbientLight {
 	float intensity;
 
@@ -29,9 +31,10 @@ struct DirectionalLight {
 struct PointLight {
 	glm::vec3 position;
 	float intensity;
+	BRDFMaterial material;
 
-	PointLight(const glm::vec3 position, float intensity) : 
-		position(position), intensity(intensity) {}
+	PointLight(const glm::vec3 position, float intensity, const BRDFMaterial& material) : 
+		position(position), intensity(intensity), material(material) {}
 
 	PointLight(const PointLight&) = default;
 	PointLight(PointLight&&) = default;

@@ -11,7 +11,7 @@ void Renderer::initialize() {
     glGenBuffers(1, &EBO);
 }
 
-void Renderer::draw(const Cylinder& cylinder, Shader& shader) {
+void Renderer::draw(const Cylinder& cylinder) {
     std::vector<Vertex> vertices = cylinder.get_vertices();
     std::vector<uint32_t> indices = cylinder.get_indices();
 
@@ -29,15 +29,16 @@ void Renderer::draw(const Cylinder& cylinder, Shader& shader) {
 
     glm::mat4 model(1.0f);
     model = glm::translate(model, cylinder.transform.position);
-    shader.set_uniform("model", model);
-    shader.set_uniform("Material.diffuse", cylinder.material.diffuse);
-    shader.set_uniform("Material.specular", cylinder.material.specular);
-    shader.set_uniform("Material.alpha", cylinder.material.alpha);
+    cylinder.material.shader->set_uniform("model", model);
+    cylinder.material.shader->set_uniform("material.diffuse", cylinder.material.diffuse);
+    cylinder.material.shader->set_uniform("material.specular", cylinder.material.specular);
+    cylinder.material.shader->set_uniform("material.specularity", cylinder.material.specularity);
+    cylinder.material.shader->set_uniform("material.alpha", cylinder.material.alpha);
 
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 }
 
-void Renderer::draw(const Icosahedron& icosahedron, Shader& shader) {
+void Renderer::draw(const Icosahedron& icosahedron) {
     std::array<Vertex, 12> vertices = icosahedron.get_vertices();
     std::array<uint32_t, 60> indices = icosahedron.get_indices();
 
@@ -57,15 +58,16 @@ void Renderer::draw(const Icosahedron& icosahedron, Shader& shader) {
     model = glm::translate(model, icosahedron.transform.position);
     model = glm::rotate(model, icosahedron.transform.euler_angles.z, glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::scale(model, icosahedron.transform.scale);
-    shader.set_uniform("model", model);
-    shader.set_uniform("Material.diffuse", icosahedron.material.diffuse);
-    shader.set_uniform("Material.specular", icosahedron.material.specular);
-    shader.set_uniform("Material.alpha", icosahedron.material.alpha);
+    icosahedron.material.shader->set_uniform("model", model);
+    icosahedron.material.shader->set_uniform("material.diffuse", icosahedron.material.diffuse);
+    icosahedron.material.shader->set_uniform("material.specular", icosahedron.material.specular);
+    icosahedron.material.shader->set_uniform("material.specularity", icosahedron.material.specularity);
+    icosahedron.material.shader->set_uniform("material.alpha", icosahedron.material.alpha);
 
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 }
 
-void Renderer::draw(const Mesh& mesh, Shader& shader) {
+void Renderer::draw(const Mesh& mesh) {
     std::vector<Vertex> vertices = mesh.get_vertices();
     std::vector<uint32_t> indices = mesh.get_indices();
 
@@ -85,15 +87,16 @@ void Renderer::draw(const Mesh& mesh, Shader& shader) {
     model = glm::translate(model, mesh.transform.position);
     model = glm::rotate(model, mesh.transform.euler_angles.z, glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::scale(model, mesh.transform.scale);
-    shader.set_uniform("model", model);
-    shader.set_uniform("Material.diffuse", mesh.material.diffuse);
-    shader.set_uniform("Material.specular", mesh.material.specular);
-    shader.set_uniform("Material.alpha", mesh.material.alpha);
+    mesh.material.shader->set_uniform("model", model);
+    mesh.material.shader->set_uniform("material.diffuse", mesh.material.diffuse);
+    mesh.material.shader->set_uniform("material.specular", mesh.material.specular);
+    mesh.material.shader->set_uniform("material.specularity", mesh.material.specularity);
+    mesh.material.shader->set_uniform("material.alpha", mesh.material.alpha);
 
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 }
 
-void Renderer::draw(const Octahedron& octahedron, Shader& shader) {
+void Renderer::draw(const Octahedron& octahedron) {
     std::array<Vertex, 6> vertices = octahedron.get_vertices();
     std::array<uint32_t, 24> indices = octahedron.get_indices();
 
@@ -113,15 +116,21 @@ void Renderer::draw(const Octahedron& octahedron, Shader& shader) {
     model = glm::translate(model, octahedron.transform.position);
     model = glm::rotate(model, octahedron.transform.euler_angles.z, glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::scale(model, octahedron.transform.scale);
-    shader.set_uniform("model", model);
-    shader.set_uniform("Material.diffuse", octahedron.material.diffuse);
-    shader.set_uniform("Material.specular", octahedron.material.specular);
-    shader.set_uniform("Material.alpha", octahedron.material.alpha);
+    octahedron.material.shader->set_uniform("model", model);
+    octahedron.material.shader->set_uniform("material.diffuse", octahedron.material.diffuse);
+    octahedron.material.shader->set_uniform("material.specular", octahedron.material.specular);
+    octahedron.material.shader->set_uniform("material.specularity", octahedron.material.specularity);
+    octahedron.material.shader->set_uniform("material.alpha", octahedron.material.alpha);
 
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 }
 
-void Renderer::draw(const Rectangle& rectangle, Shader& shader) {
+void Renderer::draw(PointLight& point_light) {
+    Sphere light(0.05f, 3, point_light.material, Transform(point_light.position));
+    draw(light);
+}
+
+void Renderer::draw(const Rectangle& rectangle) {
     std::array<Vertex, 24> vertices = rectangle.get_vertices();
     std::array<uint32_t, 36> indices = rectangle.get_indices();
 
@@ -141,15 +150,16 @@ void Renderer::draw(const Rectangle& rectangle, Shader& shader) {
     model = glm::translate(model, rectangle.transform.position);
     model = glm::rotate(model, rectangle.transform.euler_angles.z, glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::scale(model, rectangle.transform.scale);
-    shader.set_uniform("model", model);
-    shader.set_uniform("Material.diffuse", rectangle.material.diffuse);
-    shader.set_uniform("Material.specular", rectangle.material.specular);
-    shader.set_uniform("Material.alpha", rectangle.material.alpha);
+    rectangle.material.shader->set_uniform("model", model);
+    rectangle.material.shader->set_uniform("material.diffuse", rectangle.material.diffuse);
+    rectangle.material.shader->set_uniform("material.specular", rectangle.material.specular);
+    rectangle.material.shader->set_uniform("material.specularity", rectangle.material.specularity);
+    rectangle.material.shader->set_uniform("material.alpha", rectangle.material.alpha);
 
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 }
 
-void Renderer::draw(const Sphere& sphere, Shader& shader) {
+void Renderer::draw(const Sphere& sphere) {
     Icosahedron icosahedron(sphere.radius, sphere.transform, sphere.material);
 
     std::array<Vertex, 12> icosahedron_vertices = icosahedron.get_vertices();
@@ -200,14 +210,16 @@ void Renderer::draw(const Sphere& sphere, Shader& shader) {
 
     glm::mat4 model(1.0f);
     model = glm::translate(model, sphere.transform.position);
-    shader.set_uniform("model", model);
-    shader.set_uniform("Material.diffuse", sphere.material.diffuse);
-    shader.set_uniform("Material.specular", sphere.material.specular);
-    shader.set_uniform("Material.alpha", sphere.material.alpha);
+    sphere.material.shader->set_uniform("model", model);
+    sphere.material.shader->set_uniform("material.diffuse", sphere.material.diffuse);
+    sphere.material.shader->set_uniform("material.specular", sphere.material.specular);
+    sphere.material.shader->set_uniform("material.specularity", sphere.material.specularity);
+    sphere.material.shader->set_uniform("material.alpha", sphere.material.alpha);
+
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 }
 
-void Renderer::draw(const Tetrahedron& tetrahedron, Shader& shader) {
+void Renderer::draw(const Tetrahedron& tetrahedron) {
     std::array<Vertex, 4> vertices = tetrahedron.get_vertices();
     std::array<uint32_t, 12> indices = tetrahedron.get_indices();
 
@@ -227,10 +239,11 @@ void Renderer::draw(const Tetrahedron& tetrahedron, Shader& shader) {
     model = glm::translate(model, tetrahedron.transform.position);
     model = glm::rotate(model, tetrahedron.transform.euler_angles.z, glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::scale(model, tetrahedron.transform.scale);
-    shader.set_uniform("model", model);
-    shader.set_uniform("Material.diffuse", tetrahedron.material.diffuse);
-    shader.set_uniform("Material.specular", tetrahedron.material.specular);
-    shader.set_uniform("Material.alpha", tetrahedron.material.alpha);
+    tetrahedron.material.shader->set_uniform("model", model);
+    tetrahedron.material.shader->set_uniform("material.diffuse", tetrahedron.material.diffuse);
+    tetrahedron.material.shader->set_uniform("material.specular", tetrahedron.material.specular);
+    tetrahedron.material.shader->set_uniform("material.specularity", tetrahedron.material.specularity);
+    tetrahedron.material.shader->set_uniform("material.alpha", tetrahedron.material.alpha);
 
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 }

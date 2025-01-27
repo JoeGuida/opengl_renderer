@@ -1,12 +1,23 @@
 #version 330 core
 
-uniform vec3 color;
+#define NUM_LIGHTS 1
 
-in vec3 frag_pos;
-in vec3 vertex_normal;
+struct Material {
+	vec3 diffuse;
+	vec3 specular;
+	float alpha;
+};
+
+struct PointLight {
+    vec3 position;
+    float intensity;
+};
+
+uniform PointLight lights[NUM_LIGHTS];
+uniform Material material;
 
 out vec4 frag_color;
 
 void main() {
-    frag_color = vec4(color, 1.0);
+    frag_color = vec4(material.diffuse, 1.0);
 };

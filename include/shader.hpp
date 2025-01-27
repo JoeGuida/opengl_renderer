@@ -5,18 +5,22 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-#include <string>
+#include "filesystem.hpp"
+
 #include <fstream>
 #include <sstream>
+#include <string>
 #include <iostream>
+#include <memory>
+#include <unordered_map>
 
 class Shader
 {
 public:
-    unsigned int ID;
+    std::string name;
+    uint32_t id;
 
-    Shader(const std::string& vertexPath, const std::string& fragmentPath);
-
+    Shader(const std::string& name, uint32_t id) : name(name), id(id) {}
     Shader(const Shader&) = default;
     Shader(Shader&&) = default;
     virtual ~Shader() = default;
@@ -27,6 +31,17 @@ public:
     void set_uniform(const char* uniform_name, const glm::mat4& value);
     void set_uniform(const char* uniform_name, const glm::vec3& value);
     void use();
+};
+
+class ShaderFactory {
+private:
+    friend class Shader;
+    static std::unordered_map<std::string, std::shared_ptr<Shader>> shaders;
+
+public:
+    static std::shared_ptr<Shader> create(const std::string& name);
+    static void compile(std::shared_ptr<Shader>& shader, const std::string& name);
+    static std::shared_ptr<Shader> get(const std::string& name);
 };
 
 #endif
