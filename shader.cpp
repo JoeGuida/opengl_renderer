@@ -17,6 +17,11 @@ void Shader::set_uniform(const char* uniform_name, uint32_t value) {
     glUniform1i(glGetUniformLocation(id, uniform_name), value);
 }
 
+void Shader::set_uniform(const char* uniform_name, int value) {
+    use();
+    glUniform1i(glGetUniformLocation(id, uniform_name), value);
+}
+
 void Shader::set_uniform(const char* uniform_name, const glm::mat4& value) {
     use();
     glUniformMatrix4fv(glGetUniformLocation(id, uniform_name), 1, GL_FALSE, glm::value_ptr(value));
@@ -25,6 +30,11 @@ void Shader::set_uniform(const char* uniform_name, const glm::mat4& value) {
 void Shader::set_uniform(const char* uniform_name, const glm::vec3& value) {
     use();
     glUniform3f(glGetUniformLocation(id, uniform_name), value.x, value.y, value.z);
+}
+
+void Shader::set_uniform(const char* uniform_name, const glm::vec4& value) {
+    use();
+    glUniform4f(glGetUniformLocation(id, uniform_name), value.x, value.y, value.z, value.w);
 }
 
 void Shader::use() {
